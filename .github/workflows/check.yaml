@@ -17,7 +17,7 @@ jobs:
     name: test ${{ matrix.py }} - ${{ matrix.os }}
     if: github.event_name != 'schedule' || github.repository_owner == 'pypa'
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -32,6 +32,7 @@ jobs:
           - pypy-3.10
           - pypy-3.9
           - pypy-3.8
+          - graalpy-24.1
         os:
           - ubuntu-latest
           - macos-latest
@@ -41,6 +42,7 @@ jobs:
           - { os: macos-latest, py: "brew@3.10" }
           - { os: macos-latest, py: "brew@3.9" }
         exclude:
+          - { os: windows-latest, py: "graalpy-24.1" }
           - { os: windows-latest, py: "pypy-3.10" }
           - { os: windows-latest, py: "pypy-3.9" }
           - { os: windows-latest, py: "pypy-3.8" }
@@ -117,7 +119,7 @@ jobs:
         run: tox run -vv --notest --skip-missing-interpreters false
       - name: Run test suite
         run: tox run --skip-pkg-install
-        timeout-minutes: 20
+        timeout-minutes: 40
         env:
           PYTEST_ADDOPTS: "-vv --durations=20"
           CI_RUN: "yes"
